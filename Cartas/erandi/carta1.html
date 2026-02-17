@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Erandi 💌</title>
+    <style>
+        :root {
+            --color-fondo: #fce4ec;
+            --color-sobre: #f1948a;
+            --color-solapa: #e74c3c;
+            --color-carta: #ffffff;
+        }
+
+        body {
+            background-color: var(--color-fondo);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            /* Permitimos scroll solo si es necesario en pantallas pequeñas */
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .instructions {
+            margin-bottom: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            animation: bounce 2s infinite;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px; /* Ancho máximo */
+            height: 220px;
+            cursor: pointer;
+            margin-top: 100px; /* Espacio para que la carta suba */
+            transition: margin-top 0.5s ease;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-sobre);
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid var(--color-solapa);
+            transform-origin: top;
+            transition: transform 0.4s ease, z-index 0.4s;
+            z-index: 5;
+        }
+
+        /* Ajuste de solapas para que sean responsivas con el contenedor */
+        @media (max-width: 360px) {
+            .envelope-wrapper { max-width: 280px; height: 190px; }
+            .flap {
+                border-left-width: 140px;
+                border-right-width: 140px;
+                border-top-width: 105px;
+            }
+            .envelope::after {
+                border-left-width: 140px;
+                border-right-width: 140px;
+                border-bottom-width: 95px;
+            }
+        }
+
+        .envelope::after {
+            content: '';
+            position: absolute;
+            z-index: 4;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-bottom: 110px solid #f5b7b1;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .card {
+            position: absolute;
+            bottom: 10px;
+            left: 5%;
+            width: 90%;
+            height: 320px;
+            background-color: var(--color-carta);
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: transform 0.6s ease, opacity 0.4s;
+            z-index: 2;
+            opacity: 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .photo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 10px;
+            border: 5px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .photo img { width: 100%; height: 100%; object-fit: cover; }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope.open .card {
+            transform: translateY(-260px); 
+            opacity: 1;
+            z-index: 6;
+        }
+
+        /* Ajuste de altura de subida en móviles pequeños */
+        @media (max-height: 600px) {
+            .envelope.open .card { transform: translateY(-220px); }
+            .card { height: 280px; }
+        }
+
+        .card h2 { font-size: 1.2rem; color: #e74c3c; margin: 5px 0; }
+        .card p { font-size: 0.85rem; color: #555; margin: 5px 0; line-height: 1.4; }
+
+        .heart-seal {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 40px;
+            z-index: 6;
+            transition: opacity 0.3s;
+        }
+
+        .envelope.open .heart-seal { opacity: 0; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instructions">¡Toca el sobre, Erandi!</div>
+
+    <div class="envelope-wrapper" onclick="toggleEnvelope(this)">
+        <div class="envelope" id="envelope">
+            <div class="flap"></div>
+            <div class="heart-seal">❤</div>
+            <div class="card">
+                <div class="photo">
+                    <img src="img1.jpeg" alt="Foto">
+                </div>
+                <h2>Erandi</h2>
+                <p>Holii Erandi linda, queria decirte que eres una gran chica, muy muy inteligente, amable, que siempre esta con una sonrisa y alegra el día.</p>
+                <p>Eres una personita magica y gran mujer.</p>
+                <p><strong>Con mucho cariño, Nahui</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleEnvelope(element) {
+            const env = document.getElementById('envelope');
+            env.classList.toggle('open');
+            
+            if(env.classList.contains('open')) {
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            for(let i=0; i<25; i++) {
+                const c = document.createElement('div');
+                c.innerText = "❤";
+                c.style.position = "absolute";
+                c.style.left = "50%";
+                c.style.top = "50%";
+                c.style.color = ["#e74c3c", "#ff6b6b", "#f7cac9"][Math.floor(Math.random()*3)];
+                c.style.fontSize = Math.random() * 20 + 10 + "px";
+                c.style.zIndex = "100";
+                
+                const destinationX = (Math.random() - 0.5) * (window.innerWidth < 500 ? 300 : 500);
+                const destinationY = (Math.random() - 0.5) * (window.innerHeight < 500 ? 300 : 500);
+                
+                const animation = c.animate([
+                    { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+                    { transform: `translate(${destinationX}px, ${destinationY}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                });
+
+                document.body.appendChild(c);
+                animation.onfinish = () => c.remove();
+            }
+        }
+    </script>
+</body>
+</html>
